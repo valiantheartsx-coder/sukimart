@@ -125,8 +125,9 @@
     .form-group input[type="text"], .form-group input[type="number"]{ padding:.8rem; border:1px solid #ddd; border-radius:8px; font-size:1rem; outline:none }
     .form-group input:focus{ border-color:var(--brand); box-shadow:0 0 0 2px rgba(238,77,45,.1) }
 
-    .image-picker{ display:flex; gap:1rem; align-items:center }
-    .image-preview{ width:100px; height:76px; border-radius:8px; object-fit:cover; background:#eee; border:1px dashed #ccc }
+    /* Centered image picker & preview */
+    .image-picker{ display:flex; gap:.75rem; align-items:center; justify-content:center; flex-direction:column }
+    .image-preview{ width:120px; height:90px; border-radius:8px; object-fit:cover; background:#eee; border:1px dashed #ccc; display:block; margin:.35rem auto 0 }
 
     .submit-item-btn{ width:100%; padding:1rem; background:var(--brand); color:#fff; border:none; border-radius:10px; font-weight:800; font-size:1.05rem; cursor:pointer; margin-top:.5rem }
 
@@ -152,6 +153,12 @@
       70% { box-shadow: 0 0 0 12px rgba(255,255,255,0); }
       100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
     }
+    @keyframes barBounce {
+      0% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+      60% { transform: translateY(0); }
+      100% { transform: translateY(0); }
+    }
 
     /* --- Mobile Buy Now Bar --- */
     .buy-now-wrap{
@@ -176,6 +183,7 @@
       transform: translateY(0);
       opacity: 1;
     }
+    .buy-now-bar.bounce{ animation: barBounce .45s ease-out 1; }
     .buy-summary{ font-weight:900; letter-spacing:.2px }
     .buy-summary .count{ font-weight:900 }
     .buy-summary .total{ font-weight:900 }
@@ -191,7 +199,25 @@
 
     .buy-now-bar.highlight{ outline: 2px dashed rgba(255,255,255,.9); outline-offset:-6px; border-radius:8px }
 
-    /* Only visible on mobile; hide cart sidebar there */
+    /* --- Mobile-centered notifications --- */
+    .toast{
+      position: fixed; z-index: 400; 
+      background: var(--brand); color:#fff; font-weight:800;
+      padding:12px 16px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.2);
+      transition: opacity .4s ease;
+    }
+    /* default desktop placement (bottom-right) */
+    .toast.desktop{ bottom:20px; right:20px; }
+    /* mobile: center of screen, away from Buy Now bar */
+    @media (max-width: 768px){
+      .toast.mobile{
+        top: 50%; left: 50%; transform: translate(-50%, -50%);
+        max-width: 88%; text-align:center;
+      }
+      .container{ padding:1rem 1rem 5.5rem } /* bottom padding for the bar */
+    }
+
+    /* --- Only visible on mobile; hide cart sidebar there --- */
     @media (max-width: 768px){
       .cart-sidebar{ display:none !important; }
       .buy-now-wrap{ display:block; }
@@ -200,13 +226,16 @@
       .buy-now-wrap{ display:none; }
     }
 
-    /* --- Responsive --- */
-    @media (max-width: 768px){
-      .header-container{ flex-direction:column; align-items:stretch }
-      .products-grid{ grid-template-columns:repeat(auto-fill,minmax(240px,1fr)) }
-      .container{ padding:1rem 1rem 5.5rem } /* bottom padding for the bar */
+    /* --- Compact product cards on very small screens --- */
+    @media (max-width: 480px){
+      .products-grid{ grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem }
+      .product-image{ height:160px }
+      .product-info{ padding:.8rem }
+      .product-name{ font-size:.95rem }
+      .product-price{ font-size:1.1rem; margin-bottom:.4rem }
+      .product-rating{ margin-bottom:.8rem }
+      .btn{ padding:.55rem .75rem; font-weight:800 }
     }
-    @media (max-width:480px){ .products-grid{ grid-template-columns:repeat(auto-fill,minmax(200px,1fr)) } }
   </style>
 </head>
 <body>
@@ -345,7 +374,8 @@
       { id:4, name:"Wireless Mouse Gaming", price:3999.99, image:"https://images.unsplash.com/photo-1563297007-0686b7003af7?w=800&h=600&fit=crop", rating:4.6, reviews:203, isCustom:false, usesObjectURL:false },
       { id:5, name:"USB-C Hub 7-in-1", price:1999.99, image:"https://images.unsplash.com/photo-1625842268584-8f3296236761?w=800&h=600&fit=crop", rating:4.4, reviews:94, isCustom:false, usesObjectURL:false },
       { id:6, name:"Smartphone Case Protective", price:1249.99, image:"https://images.unsplash.com/photo-1601593346740-925612772716?w=800&h=600&fit=crop", rating:4.2, reviews:67, isCustom:false, usesObjectURL:false },
-      { id:7, name:"Portable Power Bank 20000mAh", price:2499.99, image:"https://images.unsplash.com/photo-1609592424970-91c4699d8ab5?w=800&h=600&fit=crop", rating:4.5, reviews:112, isCustom:false, usesObjectURL:false },
+      /* Fixed image URL + keep our own onerror fallback */
+      { id:7, name:"Portable Power Bank 20000mAh", price:2499.99, image:"https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=800&h=600&fit=crop", rating:4.5, reviews:112, isCustom:false, usesObjectURL:false },
       { id:8, name:"LED Desk Lamp with USB Charging", price:1749.99, image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop", rating:4.1, reviews:78, isCustom:false, usesObjectURL:false }
     ];
 
@@ -405,7 +435,6 @@
       cartToggle.addEventListener('click', () => {
         if (isMobile()){
           flashBuyNowBar();
-          // Scroll to bottom to reveal the bar area
           window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
           return;
         }
@@ -450,7 +479,7 @@
         el.className = `product-card ${p.isCustom ? 'custom-item' : ''}`;
         el.innerHTML = `
           ${p.isCustom ? '<div class="custom-badge">NEW</div>' : ''}
-          <img class="product-image" src="${p.image}" alt="${escapeHtml(p.name)}" />
+          <img class="product-image" src="${p.image}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='https://picsum.photos/seed/'+${p.id}+'/800/600';" />
           <div class="product-info">
             <h3 class="product-name">${escapeHtml(p.name)}</h3>
             <div class="product-price">₱${p.price.toFixed(2)}</div>
@@ -599,14 +628,21 @@
       const existing = cart.find(i => i.id === productId);
       if (existing) existing.quantity++; else cart.push({ ...product, quantity:1 });
       updateCartUI();
-      // Mobile haptics + button bump
+
+      // Mobile haptics + button bump + BAR BOUNCE
       if (isMobile()){
         try{ if (navigator.vibrate) navigator.vibrate(20); }catch{}
-        buyNowBtn.classList.remove('bump'); // restart animation
+        buyNowBtn.classList.remove('bump'); // restart button animation
         void buyNowBtn.offsetWidth;
         buyNowBtn.classList.add('bump','pulse');
         setTimeout(()=> buyNowBtn.classList.remove('pulse'), 1200);
+
+        // Bounce the entire bar
+        buyNowBar.classList.remove('bounce');
+        void buyNowBar.offsetWidth;
+        buyNowBar.classList.add('bounce');
       }
+
       showNotification('Added to cart!');
     }
 
@@ -620,7 +656,7 @@
           const row = document.createElement('div');
           row.className = 'cart-item';
           row.innerHTML = `
-            <img class="cart-item-image" src="${item.image}" alt="${escapeHtml(item.name)}">
+            <img class="cart-item-image" src="${item.image}" alt="${escapeHtml(item.name)}" onerror="this.onerror=null;this.src='https://picsum.photos/seed/cart${item.id}/120/120';">
             <div style="flex:1">
               <div class="cart-item-name">${escapeHtml(item.name)}</div>
               <div class="cart-item-price">₱${item.price.toFixed(2)}</div>
@@ -647,7 +683,7 @@
       updateCartUI();
     }
 
-    function removeFromCart(productId){ cart = cart.filter(i => i.id !== productId); updateCartUI(); showNotification('Item removed from cart'); }
+    function removeFromCart(productId){ cart = cart.filter(i => i.id !== productId); updateCartUI(); showNotification('Product deleted successfully!'); }
 
     function openCart(){ cartSidebar.classList.add('open'); showOverlay(); }
     function closeCartSidebar(){ cartSidebar.classList.remove('open'); maybeHideOverlay(); }
@@ -660,7 +696,7 @@
       cart.forEach(item => {
         const el = document.createElement('div'); el.className = 'order-item';
         el.innerHTML = `
-          <img class="order-item-image" src="${item.image}" alt="${escapeHtml(item.name)}" />
+          <img class="order-item-image" src="${item.image}" alt="${escapeHtml(item.name)}" onerror="this.onerror=null;this.src='https://picsum.photos/seed/ord${item.id}/120/120';" />
           <div style="flex:1">
             <div class="order-item-name">${escapeHtml(item.name)}</div>
             <div class="order-item-price">₱${item.price.toFixed(2)} × ${item.quantity}</div>
@@ -707,13 +743,21 @@
     // --- Utils ---
     function showNotification(message){
       const n = document.createElement('div');
+      n.className = 'toast';
       n.textContent = message;
-      n.style.position='fixed'; n.style.bottom='20px'; n.style.right='20px'; n.style.background='var(--brand)'; n.style.color='#fff';
-      n.style.padding='10px 14px'; n.style.borderRadius='8px'; n.style.boxShadow='0 2px 8px rgba(0,0,0,.2)'; n.style.zIndex='400'; n.style.fontWeight='800'; n.style.transition='opacity .5s';
+
+      if (isMobile()){
+        n.classList.add('mobile');
+      } else {
+        n.classList.add('desktop');
+      }
+
       document.body.appendChild(n);
-      setTimeout(()=>{ n.style.opacity='0'; setTimeout(()=> n.remove(), 500); }, 1800);
+      // Auto fade-out
+      setTimeout(()=>{ n.style.opacity='0'; setTimeout(()=> n.remove(), 400); }, 1600);
     }
-    function escapeHtml(str){ return String(str).replace(/[&<>"] /g, s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"," ":"&nbsp;"}[s]||s)); }
+
+    function escapeHtml(str){ return String(str).replace(/[&<>"] /g, s=>({"&":"&amp;","<":"&lt;"," >":"&gt;","\"":"&quot;"," ":"&nbsp;"}[s]||s)); }
 
     // Expose functions used in inline handlers
     window.addToCart = addToCart;
