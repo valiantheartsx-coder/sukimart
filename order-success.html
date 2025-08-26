@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Success - SukiMart</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --brand: #ee4d2d;
+      --brand-2: #ff6b35;
+      --text: #333;
+      --muted: #666;
+      --bg: #f5f5f5;
+      --card: #fff;
+      --shadow: 0 2px 10px rgba(0,0,0,.1);
+      --grad: linear-gradient(135deg, var(--brand), var(--brand-2));
+      --success: #28a745;
+      --success-light: #d4edda;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: var(--grad);
+      color: #fff;
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(238,77,45,.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.8rem;
+    }
+    .back-btn {
+      background: rgba(255,255,255,.2);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.3);
+      padding: .6rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background .2s;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,.3);
+    }
+
+    /* Main content */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Success message */
+    .success-card {
+      background: var(--card);
+      border-radius: 15px;
+      padding: 3rem 2rem;
+      box-shadow: var(--shadow);
+      text-align: center;
+      margin-bottom: 2rem;
+      border: 3px solid var(--success);
+    }
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    .success-title {
+      color: var(--success);
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .success-subtitle {
+      color: var(--muted);
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* Order details */
+    .order-details {
+      background: var(--success-light);
+      border: 1px solid var(--success);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .order-details h3 {
+      color: var(--success);
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .order-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+    .info-label {
+      font-weight: 700;
+      color: var(--text);
+      font-size: .9rem;
+    }
+    .info-value {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* Order items */
+    .order-items {
+      border-top: 2px solid #c3e6cb;
+      padding-top: 1rem;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .75rem 0;
+      border-bottom: 1px solid #c3e6cb;
+    }
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    .item-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+    }
+    .item-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid var(--success);
+    }
+    .item-details {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+    }
+    .item-name {
+      font-weight: 600;
+      font-size: .95rem;
+    }
+    .item-quantity {
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .item-price {
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    /* Order total */
+    .order-total-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--success);
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: .5rem;
+    }
+    .total-row.final {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--success);
+      margin-top: .5rem;
+      padding-top: .5rem;
+      border-top: 1px solid #c3e6cb;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .btn-primary {
+      background: var(--grad);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(238,77,45,.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(238,77,45,.4);
+    }
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(40,167,69,.3);
+    }
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40,167,69,.4);
+    }
+
+    /* School notice */
+    .school-notice {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .school-notice strong {
+      color: #6c5ce7;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      .success-card {
+        padding: 2rem 1rem;
+      }
+      .success-title {
+        font-size: 2rem;
+      }
+      .success-subtitle {
+        font-size: 1rem;
+      }
+      .order-details {
+        padding: 1rem;
+      }
+      .order-info {
+        grid-template-columns: 1fr;
+      }
+      .action-buttons {
+        flex-direction: column;
+      }
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .item-image {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <a class="logo" href="index.html">🛍️ SukiMart</a>
+      <a class="back-btn" href="index.html">← Back to Shop</a>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <div class="container">
+    <!-- Success Message -->
+    <div class="success-card">
+      <div class="success-icon">🎉</div>
+      <h1 class="success-title">Order Successful!</h1>
+      <p class="success-subtitle">
+        Thank you for your order! Your items will be processed and delivered soon.
+        <br>You will receive an email confirmation shortly.
+      </p>
+      
+      <!-- Order Details -->
+      <div class="order-details">
+        <h3>📋 Order Details</h3>
+        <div class="order-info">
+          <div class="info-item">
+            <div class="info-label">Order Number</div>
+            <div class="info-value" id="orderNumber">#SM-000001</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Order Date</div>
+            <div class="info-value" id="orderDate">-</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Payment Method</div>
+            <div class="info-value" id="paymentMethod">Cash on Delivery</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Estimated Delivery</div>
+            <div class="info-value" id="deliveryDate">-</div>
+          </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="order-items">
+          <div id="orderItemsList">
+            <!-- Items will be loaded here -->
+          </div>
+          
+          <!-- Order Total -->
+          <div class="order-total-section">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span id="orderSubtotal">₱0.00</span>
+            </div>
+            <div class="total-row">
+              <span>Shipping Fee:</span>
+              <span id="orderShipping">₱99.00</span>
+            </div>
+            <div class="total-row final">
+              <span>Total Amount:</span>
+              <span id="orderTotal">₱0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <a href="index.html" class="btn btn-primary">
+          🛍️ Continue Shopping
+        </a>
+        <button onclick="window.print()" class="btn btn-success">
+          🖨️ Print Receipt
+        </button>
+      </div>
+    </div>
+
+    <!-- School Notice -->
+    <div class="school-notice">
+      <strong>📝 School Project Notice:</strong> This is a mockup order confirmation for educational purposes only. No real transactions were processed.
+    </div>
+  </div>
+
+  <script>
+    // Order data from URL parameters or localStorage
+    let orderData = null;
+    const SHIPPING_FEE = 99.00;
+
+    // Generate order number
+    function generateOrderNumber() {
+      const date = new Date();
+      const timestamp = date.getTime().toString().slice(-6);
+      return `#SM-${timestamp}`;
+    }
+
+    // Format date
+    function formatDate(date) {
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // Calculate delivery date (3-5 business days)
+    function calculateDeliveryDate() {
+      const today = new Date();
+      const deliveryDays = 3 + Math.floor(Math.random() * 3); // 3-5 days
+      const delivery = new Date(today);
+      delivery.setDate(today.getDate() + deliveryDays);
+      return delivery;
+    }
+
+    // Format price
+    function formatPrice(price) {
+      return `₱${parseFloat(price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    // Load order details
+    function loadOrderDetails() {
+      try {
+        // Try to get order data from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderDataParam = urlParams.get('order');
+        
+        if (orderDataParam) {
+          orderData = JSON.parse(decodeURIComponent(orderDataParam));
+        } else {
+          // Fallback to localStorage
+          const savedOrder = localStorage.getItem('sukimart_last_order');
+          orderData = savedOrder ? JSON.parse(savedOrder) : null;
+        }
+
+        if (!orderData) {
+          // If no order data, show message but don't auto-redirect
+          document.querySelector('.success-title').textContent = 'No Order Found';
+          document.querySelector('.success-subtitle').textContent = 'No order data was found. Please return to shop to place an order.';
+          document.querySelector('.success-icon').textContent = '❌';
+          document.querySelector('.order-details').style.display = 'none';
+          return;
+        }
+
+        renderOrderDetails();
+      } catch (error) {
+        console.error('Error loading order details:', error);
+        // Show error message but don't auto-redirect
+        document.querySelector('.success-title').textContent = 'Error Loading Order';
+        document.querySelector('.success-subtitle').textContent = 'There was an error loading your order details. Please return to shop.';
+        document.querySelector('.success-icon').textContent = '⚠️';
+        document.querySelector('.order-details').style.display = 'none';
+      }
+    }
+
+    // Render order details
+    function renderOrderDetails() {
+      if (!orderData) return;
+
+      // Set order info
+      document.getElementById('orderNumber').textContent = orderData.orderNumber || generateOrderNumber();
+      
+      // Handle date conversion properly
+      const orderDate = orderData.orderDate ? new Date(orderData.orderDate) : new Date();
+      const deliveryDate = orderData.deliveryDate ? new Date(orderData.deliveryDate) : calculateDeliveryDate();
+      
+      document.getElementById('orderDate').textContent = formatDate(orderDate);
+      document.getElementById('paymentMethod').textContent = orderData.paymentMethod || 'Cash on Delivery';
+      document.getElementById('deliveryDate').textContent = formatDate(deliveryDate);
+
+      // Render order items
+      const itemsList = document.getElementById('orderItemsList');
+      if (orderData.items && orderData.items.length > 0) {
+        itemsList.innerHTML = orderData.items.map(item => `
+          <div class="order-item">
+            <div class="item-info">
+              <img src="${item.image || 'https://via.placeholder.com/50x50?text=No+Image'}" alt="${item.name}" class="item-image">
+              <div class="item-details">
+                <div class="item-name">${item.name}</div>
+                <div class="item-quantity">Qty: ${item.quantity}</div>
+              </div>
+            </div>
+            <div class="item-price">${formatPrice(item.price * item.quantity)}</div>
+          </div>
+        `).join('');
+
+        // Calculate and display totals
+        const subtotal = orderData.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const total = subtotal + SHIPPING_FEE;
+
+        document.getElementById('orderSubtotal').textContent = formatPrice(subtotal);
+        document.getElementById('orderShipping').textContent = formatPrice(SHIPPING_FEE);
+        document.getElementById('orderTotal').textContent = formatPrice(total);
+      } else {
+        itemsList.innerHTML = '<div style="text-align: center; color: var(--muted); padding: 2rem;">No items found</div>';
+      }
+    }
+
+    // Clean up localStorage on page load
+    function cleanupOrder() {
+      // Remove the temporary order data after displaying
+      localStorage.removeItem('sukimart_last_order');
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      loadOrderDetails();
+      
+      // Clean up after 30 seconds (longer delay)
+      setTimeout(cleanupOrder, 30000);
+    });
+  </script>
+</body>
+</html>

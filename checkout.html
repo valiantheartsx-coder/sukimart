@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout - SukiMart</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --brand: #ee4d2d;
+      --brand-2: #ff6b35;
+      --text: #333;
+      --muted: #666;
+      --bg: #f5f5f5;
+      --card: #fff;
+      --shadow: 0 2px 10px rgba(0,0,0,.1);
+      --grad: linear-gradient(135deg, var(--brand), var(--brand-2));
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* Header */
+    .header {
+      background: var(--grad);
+      color: #fff;
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(238,77,45,.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.8rem;
+    }
+    .back-btn {
+      background: rgba(255,255,255,.2);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.3);
+      padding: .6rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background .2s;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,.3);
+    }
+
+    /* Main content */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem 1rem;
+      padding-top: 2rem; /* Ensure proper spacing below sticky header */
+    }
+    .checkout-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .checkout-header h1 {
+      color: var(--brand);
+      font-size: 2rem;
+      margin-bottom: .5rem;
+    }
+    .checkout-header p {
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    /* Checkout form */
+    .checkout-form {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+    .form-section {
+      margin-bottom: 2rem;
+    }
+    .form-section h3 {
+      color: var(--brand);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      border-bottom: 2px solid #eee;
+      padding-bottom: .5rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+    .form-group label {
+      font-weight: 700;
+      color: #222;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: .8rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 2px rgba(238,77,45,.1);
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* Order summary */
+    .order-summary {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+    .cart-empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .75rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .cart-item-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+    }
+    .cart-item-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid #eee;
+    }
+    .cart-item-details {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+    }
+    .cart-item-name {
+      font-weight: 600;
+      font-size: .95rem;
+    }
+    .cart-item-quantity {
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .cart-item-price {
+      font-weight: 600;
+      color: var(--brand);
+    }
+    .summary-header {
+      color: var(--brand);
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #eee;
+      padding-bottom: .5rem;
+    }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .75rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .summary-item:last-child {
+      border-bottom: none;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--brand);
+      margin-top: .5rem;
+      padding-top: 1rem;
+      border-top: 2px solid #eee;
+    }
+
+    /* Payment methods */
+    .payment-methods {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .payment-option {
+      flex: 1;
+      min-width: 120px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: var(--card);
+    }
+    .payment-option:hover {
+      border-color: var(--brand);
+      background: rgba(238,77,45,.05);
+    }
+    .payment-option input {
+      margin-bottom: .5rem;
+    }
+    .payment-option.selected {
+      border-color: var(--brand);
+      background: rgba(238,77,45,.1);
+    }
+
+    /* Submit button */
+    .checkout-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: var(--grad);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: transform .2s;
+      box-shadow: 0 4px 15px rgba(238,77,45,.3);
+    }
+    .checkout-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(238,77,45,.4);
+    }
+    .checkout-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Back to shop button */
+    .back-to-shop-btn {
+      background: #6c757d;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 2px 8px rgba(108,117,125,.3);
+    }
+    .back-to-shop-btn:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(108,117,125,.4);
+    }
+
+    /* Mockup notice */
+    .mockup-notice {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .mockup-notice strong {
+      color: #6c5ce7;
+    }
+
+    /* Mobile cart toggle */
+    .cart-items-container {
+      transition: all .3s ease;
+    }
+    .cart-items-container.collapsed {
+      max-height: 0;
+      overflow: hidden;
+    }
+    .cart-items-container.expanded {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+        padding-bottom: 6rem; /* Add space for potential mobile elements */
+      }
+      .checkout-form {
+        padding: 1.5rem;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .payment-methods {
+        flex-direction: column;
+      }
+      .payment-option {
+        min-width: auto;
+      }
+      
+      /* Hide back button on mobile */
+      .back-btn {
+        display: none;
+      }
+      
+      /* Mobile cart toggle */
+      #mobileCartToggle {
+        display: block !important;
+      }
+      .cart-items-container {
+        max-height: 500px; /* Always show by default */
+        overflow: visible;
+        transition: max-height .3s ease;
+      }
+      .cart-items-container.hide {
+        max-height: 0;
+        overflow: hidden;
+      }
+      .cart-item-image {
+        width: 40px;
+        height: 40px;
+      }
+      .cart-item-info {
+        gap: .75rem;
+      }
+      
+      /* Keep checkout button visible by default on mobile */
+      .checkout-btn.mobile-hidden {
+        display: none;
+      }
+      
+      /* Hide back to shop button on mobile */
+      .back-to-shop-btn.mobile-hidden {
+        display: none;
+      }
+      
+    /* Mobile action buttons */
+      .action-buttons {
+        flex-direction: column;
+        gap: .75rem;
+      }
+      .back-to-shop-btn, .checkout-btn {
+        flex: none !important;
+        width: 100%;
+      }
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal {
+      background: var(--card);
+      border-radius: 15px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease;
+      text-align: center;
+    }
+    .modal-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .modal-title {
+      color: #ff4757;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .modal-message {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+    .modal-button {
+      background: var(--grad);
+      color: #fff;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+    .modal-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(238,77,45,.3);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <a class="logo" href="index.html">🛍️ SukiMart</a>
+      <a class="back-btn" href="index.html">← Back to Shop</a>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <div class="container">
+    <div class="checkout-header">
+      <h1>Checkout</h1>
+      <p>Complete your order below</p>
+    </div>
+
+    <!-- Mockup notice -->
+    <div class="mockup-notice">
+      <strong>📝 School Project Notice:</strong> This is a mockup checkout page for educational purposes only. No real transactions will be processed.
+    </div>
+
+    <!-- Checkout form -->
+    <div class="checkout-form">
+      <form id="checkoutForm">
+        <!-- Shipping Information -->
+        <div class="form-section">
+          <h3>📦 Shipping Information</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" required>
+            </div>
+            <div class="form-group full-width">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" required>
+            </div>
+            <div class="form-group full-width">
+              <label for="address">Street Address *</label>
+              <input type="text" id="address" required>
+            </div>
+            <div class="form-group">
+              <label for="city">City *</label>
+              <input type="text" id="city" required>
+            </div>
+            <div class="form-group">
+              <label for="province">Province *</label>
+              <select id="province" required>
+                <option value="">Select Province</option>
+                <option value="metro-manila">Metro Manila</option>
+                <option value="cebu">Cebu</option>
+                <option value="davao">Davao</option>
+                <option value="laguna">Laguna</option>
+                <option value="cavite">Cavite</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="zipCode">ZIP Code *</label>
+              <input type="text" id="zipCode" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone Number *</label>
+              <input type="tel" id="phone" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="form-section">
+          <h3>💳 Payment Method</h3>
+          <div class="payment-methods">
+            <div class="payment-option selected" onclick="selectPayment('cod')">
+              <input type="radio" name="payment" value="cod" checked>
+              <div><strong>Cash on Delivery</strong></div>
+              <div style="font-size: .9rem; color: var(--muted);">Pay when delivered</div>
+            </div>
+            <div class="payment-option" onclick="selectPayment('gcash')">
+              <input type="radio" name="payment" value="gcash">
+              <div><strong>GCash</strong></div>
+              <div style="font-size: .9rem; color: var(--muted);">Digital wallet</div>
+            </div>
+            <div class="payment-option" onclick="selectPayment('card')">
+              <input type="radio" name="payment" value="card">
+              <div><strong>Credit/Debit</strong></div>
+              <div style="font-size: .9rem; color: var(--muted);">Visa, Mastercard</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Notes -->
+        <div class="form-section">
+          <h3>📝 Order Notes (Optional)</h3>
+          <div class="form-group">
+            <label for="notes">Special instructions for delivery</label>
+            <textarea id="notes" rows="3" placeholder="e.g., Leave at the gate, Call before delivery, etc."></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 class="summary-header" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">📋 Order Summary</h3>
+        <button id="mobileCartToggle" style="display: none; background: var(--brand); color: #fff; border: none; padding: .5rem 1rem; border-radius: 6px; cursor: pointer;">Hide Cart</button>
+      </div>
+      <div id="cartItems" class="cart-items-container">
+        <!-- Cart items will be dynamically loaded here -->
+        <div class="cart-empty">
+          <p>🛒 Your cart is empty</p>
+          <a href="index.html" style="color: var(--brand); text-decoration: none; font-weight: 600;">Continue Shopping</a>
+        </div>
+      </div>
+      <div id="cartSummary" style="display: none;">
+        <div class="summary-item">
+          <span>Subtotal</span>
+          <span id="subtotalAmount">₱0.00</span>
+        </div>
+        <div class="summary-item">
+          <span>Shipping Fee</span>
+          <span id="shippingAmount">₱99.00</span>
+        </div>
+        <div class="summary-item">
+          <span><strong>Total Amount</strong></span>
+          <span><strong id="totalAmount">₱0.00</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" style="display: flex; gap: 1rem;">
+      <button type="button" class="back-to-shop-btn" onclick="window.location.href='index.html'" style="flex: 1; padding: 1rem; background: #6c757d; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background .2s;">
+        ← Back to Shop
+      </button>
+      <button class="checkout-btn" id="placeOrderBtn" onclick="placeOrder()" disabled style="flex: 2;">
+        🎉 Place Order - <span id="orderTotal">₱0.00</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Validation Modal -->
+  <div id="validationModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-icon">⚠️</div>
+      <h2 class="modal-title">Missing Information</h2>
+      <p class="modal-message">Please fill in all required fields marked with (*) before placing your order.</p>
+      <button class="modal-button" onclick="closeValidationModal()">Got it!</button>
+    </div>
+  </div>
+
+  <!-- Empty Cart Modal -->
+  <div id="emptyCartModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-icon">🛒</div>
+      <h2 class="modal-title">Cart Empty</h2>
+      <p class="modal-message">Your cart is empty. Please add some items before placing an order.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+        <button class="modal-button" onclick="closeEmptyCartModal()">OK</button>
+        <button class="modal-button" onclick="window.location.href='index.html'" style="background: #28a745;">Go Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cart functionality
+    let cartItems = [];
+    let cartVisible = false;
+    const SHIPPING_FEE = 99.00;
+
+    // Load cart from localStorage
+    function loadCart() {
+      try {
+        const savedCart = localStorage.getItem('sukimart_cart');
+        cartItems = savedCart ? JSON.parse(savedCart) : [];
+      } catch (error) {
+        console.error('Error loading cart:', error);
+        cartItems = [];
+      }
+      renderCart();
+    }
+
+    // Format price
+    function formatPrice(price) {
+      return `₱${parseFloat(price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    // Calculate totals
+    function calculateTotals() {
+      const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const total = subtotal + SHIPPING_FEE;
+      return { subtotal, shipping: SHIPPING_FEE, total };
+    }
+
+    // Render cart items
+    function renderCart() {
+      const cartContainer = document.getElementById('cartItems');
+      const cartSummary = document.getElementById('cartSummary');
+      const placeOrderBtn = document.getElementById('placeOrderBtn');
+      
+      if (cartItems.length === 0) {
+        cartContainer.innerHTML = `
+          <div class="cart-empty">
+            <p>🛒 Your cart is empty</p>
+            <a href="index.html" style="color: var(--brand); text-decoration: none; font-weight: 600;">Continue Shopping</a>
+          </div>
+        `;
+        cartSummary.style.display = 'none';
+        placeOrderBtn.disabled = true;
+        document.getElementById('orderTotal').textContent = formatPrice(0);
+        return;
+      }
+
+      // Render cart items
+      cartContainer.innerHTML = cartItems.map(item => `
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <img src="${item.image || 'https://via.placeholder.com/50x50?text=No+Image'}" alt="${item.name}" class="cart-item-image">
+            <div class="cart-item-details">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-quantity">Qty: ${item.quantity}</div>
+            </div>
+          </div>
+          <div class="cart-item-price">${formatPrice(item.price * item.quantity)}</div>
+        </div>
+      `).join('');
+
+      // Update totals
+      const { subtotal, shipping, total } = calculateTotals();
+      document.getElementById('subtotalAmount').textContent = formatPrice(subtotal);
+      document.getElementById('shippingAmount').textContent = formatPrice(shipping);
+      document.getElementById('totalAmount').textContent = formatPrice(total);
+      document.getElementById('orderTotal').textContent = formatPrice(total);
+      
+      cartSummary.style.display = 'block';
+      placeOrderBtn.disabled = false;
+    }
+
+    // Mobile cart toggle
+    function toggleMobileCart() {
+      const cartContainer = document.getElementById('cartItems');
+      const toggleBtn = document.getElementById('mobileCartToggle');
+      const placeOrderBtn = document.getElementById('placeOrderBtn');
+      const backToShopBtn = document.querySelector('.back-to-shop-btn');
+      
+      cartVisible = !cartVisible;
+      
+      if (cartVisible) {
+        cartContainer.classList.remove('hide');
+        toggleBtn.textContent = 'Hide Cart';
+        // Always show checkout button when cart is visible
+        placeOrderBtn.classList.remove('mobile-hidden');
+        // Hide back to shop button when cart is visible on mobile
+        if (window.innerWidth <= 768) {
+          backToShopBtn.classList.add('mobile-hidden');
+        }
+      } else {
+        cartContainer.classList.add('hide');
+        toggleBtn.textContent = 'Show Cart';
+        // Hide checkout button on mobile when cart is hidden
+        if (window.innerWidth <= 768) {
+          placeOrderBtn.classList.add('mobile-hidden');
+          // Show back to shop button when cart is hidden on mobile
+          backToShopBtn.classList.remove('mobile-hidden');
+        }
+      }
+    }
+
+    function selectPayment(method) {
+      // Remove selected class from all options
+      document.querySelectorAll('.payment-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked option
+      event.currentTarget.classList.add('selected');
+      
+      // Update radio button
+      document.querySelector(`input[value="${method}"]`).checked = true;
+    }
+
+    // Modal functions
+    function showValidationModal() {
+      document.getElementById('validationModal').classList.add('active');
+    }
+    
+    function closeValidationModal() {
+      document.getElementById('validationModal').classList.remove('active');
+    }
+    
+    function showEmptyCartModal() {
+      document.getElementById('emptyCartModal').classList.add('active');
+    }
+    
+    function closeEmptyCartModal() {
+      document.getElementById('emptyCartModal').classList.remove('active');
+    }
+
+    function placeOrder() {
+      // Check if cart is empty
+      if (cartItems.length === 0) {
+        showEmptyCartModal();
+        return;
+      }
+
+      // Simple form validation
+      const form = document.getElementById('checkoutForm');
+      const requiredFields = form.querySelectorAll('[required]');
+      let isValid = true;
+
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          isValid = false;
+          field.style.borderColor = '#ff4757';
+        } else {
+          field.style.borderColor = '#ddd';
+        }
+      });
+
+      if (!isValid) {
+        showValidationModal();
+        return;
+      }
+
+      // Get selected payment method
+      const selectedPayment = document.querySelector('input[name="payment"]:checked');
+      const paymentMethods = {
+        'cod': 'Cash on Delivery',
+        'gcash': 'GCash',
+        'card': 'Credit/Debit Card'
+      };
+      
+      // Generate order number and dates
+      const orderNumber = '#SM-' + Date.now().toString().slice(-6);
+      const orderDate = new Date();
+      const deliveryDate = new Date();
+      deliveryDate.setDate(orderDate.getDate() + 3 + Math.floor(Math.random() * 3)); // 3-5 days
+      
+      // Prepare order data for success page
+      const orderData = {
+        orderNumber,
+        orderDate,
+        deliveryDate,
+        paymentMethod: paymentMethods[selectedPayment.value] || 'Cash on Delivery',
+        items: [...cartItems],
+        customerInfo: {
+          name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+          email: document.getElementById('email').value,
+          address: document.getElementById('address').value,
+          city: document.getElementById('city').value,
+          province: document.getElementById('province').value,
+          zipCode: document.getElementById('zipCode').value,
+          phone: document.getElementById('phone').value
+        },
+        notes: document.getElementById('notes').value
+      };
+      
+      // Save order data temporarily for success page
+      localStorage.setItem('sukimart_last_order', JSON.stringify(orderData));
+      
+      // Clear cart after successful order
+      localStorage.removeItem('sukimart_cart');
+      
+      // Redirect to success page
+      window.location.href = 'order-success.html';
+    }
+
+    // Auto-remove error styling when user types
+    document.addEventListener('input', (e) => {
+      if (e.target.style.borderColor === 'rgb(255, 71, 87)') {
+        e.target.style.borderColor = '#ddd';
+      }
+    });
+
+    // Check if mobile and update UI accordingly
+    function checkMobileView() {
+      const placeOrderBtn = document.getElementById('placeOrderBtn');
+      const toggleBtn = document.getElementById('mobileCartToggle');
+      const backToShopBtn = document.querySelector('.back-to-shop-btn');
+      
+      if (window.innerWidth <= 768) {
+        // On mobile, cart is visible by default
+        cartVisible = true;
+        toggleBtn.textContent = 'Hide Cart';
+        placeOrderBtn.classList.remove('mobile-hidden');
+        // Hide back to shop button by default on mobile when cart is visible
+        backToShopBtn.classList.add('mobile-hidden');
+      } else {
+        // On desktop always show checkout button and hide toggle
+        cartVisible = true;
+        placeOrderBtn.classList.remove('mobile-hidden');
+        // Always show back to shop button on desktop
+        backToShopBtn.classList.remove('mobile-hidden');
+      }
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCart();
+      
+      // Set up mobile cart toggle
+      document.getElementById('mobileCartToggle').addEventListener('click', toggleMobileCart);
+      
+      // Initial mobile check
+      checkMobileView();
+      
+      // Listen for resize events
+      window.addEventListener('resize', checkMobileView);
+      
+      // Add click-outside-to-close for modals
+      document.getElementById('validationModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('validationModal')) {
+          closeValidationModal();
+        }
+      });
+      
+      document.getElementById('emptyCartModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('emptyCartModal')) {
+          closeEmptyCartModal();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
