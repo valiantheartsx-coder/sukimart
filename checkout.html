@@ -256,23 +256,6 @@
       box-shadow: none;
     }
 
-    /* Back to shop button */
-    .back-to-shop-btn {
-      background: #6c757d;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .2s;
-      box-shadow: 0 2px 8px rgba(108,117,125,.3);
-    }
-    .back-to-shop-btn:hover {
-      background: #5a6268;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(108,117,125,.4);
-    }
-
     /* Mockup notice */
     .mockup-notice {
       background: #fff3cd;
@@ -319,9 +302,11 @@
         min-width: auto;
       }
       
-      /* Hide back button on mobile */
+      /* Show back button on mobile too */
       .back-btn {
-        display: none;
+        display: inline-flex !important;
+        padding: .5rem .8rem;
+        font-size: .9rem;
       }
       
       /* Mobile cart toggle */
@@ -348,21 +333,6 @@
       /* Keep checkout button visible by default on mobile */
       .checkout-btn.mobile-hidden {
         display: none;
-      }
-      
-      /* Hide back to shop button on mobile */
-      .back-to-shop-btn.mobile-hidden {
-        display: none;
-      }
-      
-    /* Mobile action buttons */
-      .action-buttons {
-        flex-direction: column;
-        gap: .75rem;
-      }
-      .back-to-shop-btn, .checkout-btn {
-        flex: none !important;
-        width: 100%;
       }
     }
 
@@ -566,12 +536,9 @@
       </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="action-buttons" style="display: flex; gap: 1rem;">
-      <button type="button" class="back-to-shop-btn" onclick="window.location.href='index.html'" style="flex: 1; padding: 1rem; background: #6c757d; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background .2s;">
-        ← Back to Shop
-      </button>
-      <button class="checkout-btn" id="placeOrderBtn" onclick="placeOrder()" disabled style="flex: 2;">
+    <!-- Place Order Button (removed back to shop button) -->
+    <div class="action-buttons" style="display: flex; justify-content: center;">
+      <button class="checkout-btn" id="placeOrderBtn" onclick="placeOrder()" disabled>
         🎉 Place Order - <span id="orderTotal">₱0.00</span>
       </button>
     </div>
@@ -581,7 +548,7 @@
   <div id="validationModal" class="modal-overlay">
     <div class="modal">
       <div class="modal-icon">⚠️</div>
-      <h2 class="modal-title">Missing Information</h2>
+      <h2 class="modal-title">Missing Shipping Information</h2>
       <p class="modal-message">Please fill in all required fields marked with (*) before placing your order.</p>
       <button class="modal-button" onclick="closeValidationModal()">Got it!</button>
     </div>
@@ -678,29 +645,15 @@
     function toggleMobileCart() {
       const cartContainer = document.getElementById('cartItems');
       const toggleBtn = document.getElementById('mobileCartToggle');
-      const placeOrderBtn = document.getElementById('placeOrderBtn');
-      const backToShopBtn = document.querySelector('.back-to-shop-btn');
       
       cartVisible = !cartVisible;
       
       if (cartVisible) {
         cartContainer.classList.remove('hide');
         toggleBtn.textContent = 'Hide Cart';
-        // Always show checkout button when cart is visible
-        placeOrderBtn.classList.remove('mobile-hidden');
-        // Hide back to shop button when cart is visible on mobile
-        if (window.innerWidth <= 768) {
-          backToShopBtn.classList.add('mobile-hidden');
-        }
       } else {
         cartContainer.classList.add('hide');
         toggleBtn.textContent = 'Show Cart';
-        // Hide checkout button on mobile when cart is hidden
-        if (window.innerWidth <= 768) {
-          placeOrderBtn.classList.add('mobile-hidden');
-          // Show back to shop button when cart is hidden on mobile
-          backToShopBtn.classList.remove('mobile-hidden');
-        }
       }
     }
 
@@ -814,21 +767,16 @@
     function checkMobileView() {
       const placeOrderBtn = document.getElementById('placeOrderBtn');
       const toggleBtn = document.getElementById('mobileCartToggle');
-      const backToShopBtn = document.querySelector('.back-to-shop-btn');
       
       if (window.innerWidth <= 768) {
         // On mobile, cart is visible by default
         cartVisible = true;
         toggleBtn.textContent = 'Hide Cart';
         placeOrderBtn.classList.remove('mobile-hidden');
-        // Hide back to shop button by default on mobile when cart is visible
-        backToShopBtn.classList.add('mobile-hidden');
       } else {
         // On desktop always show checkout button and hide toggle
         cartVisible = true;
         placeOrderBtn.classList.remove('mobile-hidden');
-        // Always show back to shop button on desktop
-        backToShopBtn.classList.remove('mobile-hidden');
       }
     }
 
