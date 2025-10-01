@@ -483,19 +483,27 @@
   <script>
     // --- Data ---
     let products = [
-      { id:1, name:"Wireless Bluetooth Headphones", price:2999.50, image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=600&fit=crop", rating:4.5, reviews:128, isCustom:false, usesObjectURL:false },
-      { id:2, name:"Smart Watch Series 8", price:14999.75, image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=600&fit=crop", rating:4.7, reviews:89, isCustom:false, usesObjectURL:false },
-      { id:3, name:"Laptop Stand Adjustable", price:2299.99, image:"https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=600&fit=crop", rating:4.3, reviews:156, isCustom:false, usesObjectURL:false },
-      { id:4, name:"Wireless Mouse Gaming", price:3999.99, image:"https://images.unsplash.com/photo-1563297007-0686b7003af7?w=800&h=600&fit=crop", rating:4.6, reviews:203, isCustom:false, usesObjectURL:false },
-      { id:5, name:"USB-C Hub 7-in-1", price:1999.99, image:"https://images.unsplash.com/photo-1625842268584-8f3296236761?w=800&h=600&fit=crop", rating:4.4, reviews:94, isCustom:false, usesObjectURL:false },
-      { id:6, name:"Smartphone Case Protective", price:1249.99, image:"https://images.unsplash.com/photo-1601593346740-925612772716?w=800&h=600&fit=crop", rating:4.2, reviews:67, isCustom:false, usesObjectURL:false },
-      /* Fixed image URL + keep our own onerror fallback */
-      { id:7, name:"Portable Power Bank 20000mAh", price:2499.99, image:"https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=800&h=600&fit=crop", rating:4.5, reviews:112, isCustom:false, usesObjectURL:false },
-      { id:8, name:"LED Desk Lamp with USB Charging", price:1749.99, image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop", rating:4.1, reviews:78, isCustom:false, usesObjectURL:false }
+      { id:1, name:"Cow Feeder", price:2999.50, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/cowfeeder.jpg", rating:4.5, reviews:128, isCustom:false, usesObjectURL:false },
+      { id:2, name:"Piglet Heat Lamp", price:1499.75, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/pigheatlamp.jpg", rating:4.7, reviews:89, isCustom:false, usesObjectURL:false },
+      { id:3, name:"Chicken Waterer", price:899.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/chickwaterer.png", rating:4.3, reviews:156, isCustom:false, usesObjectURL:false },
+      { id:4, name:"Livestock Injection Syringe", price:399.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/lis.jpg", rating:4.6, reviews:203, isCustom:false, usesObjectURL:false },
+      { id:5, name:"Automatic Cow Water Bowl", price:1999.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/acwb.jpg", rating:4.4, reviews:94, isCustom:false, usesObjectURL:false },
+      { id:6, name:"Pig Ear Tag Set", price:1249.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/pets.jpg", rating:4.2, reviews:67, isCustom:false, usesObjectURL:false },
+      { id:7, name:"Chicken Incubator", price:2499.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/chicki.jpg", rating:4.5, reviews:112, isCustom:false, usesObjectURL:false },
+      { id:8, name:"Livestock Mineral Block", price:749.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/lmb.jpg", rating:4.1, reviews:78, isCustom:false, usesObjectURL:false },
+      { id:9, name:"Cattle Hoof Trimmer", price:3499.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/cht.jpg", rating:4.6, reviews:92, isCustom:false, usesObjectURL:false },
+      { id:10, name:"Poultry Feed Dispenser", price:1799.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/pfd.jpg", rating:4.4, reviews:145, isCustom:false, usesObjectURL:false },
+      { id:11, name:"Animal Weighing Scale", price:5999.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/aws.jpg", rating:4.8, reviews:167, isCustom:false, usesObjectURL:false },
+      { id:12, name:"Veterinary Stethoscope", price:899.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/vs.jpg", rating:4.7, reviews:88, isCustom:false, usesObjectURL:false },
+      { id:13, name:"Cattle Dehorning Tool", price:2799.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/cdt.jpg", rating:4.3, reviews:73, isCustom:false, usesObjectURL:false },
+      { id:14, name:"Pig Farrowing Crate", price:4999.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/pfc.jpg", rating:4.5, reviews:95, isCustom:false, usesObjectURL:false },
+      { id:15, name:"Animal Temperature Gun", price:1299.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/atg.jpg", rating:4.6, reviews:182, isCustom:false, usesObjectURL:false },
+      { id:16, name:"Livestock Feed Cart", price:3299.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/lfc.jpg", rating:4.4, reviews:64, isCustom:false, usesObjectURL:false },
+      { id:17, name:"Milk Collection Unit", price:6999.99, image:"https://raw.githubusercontent.com/valiantheartsx-coder/sukimart/main/amcu.jpg", rating:4.9, reviews:134, isCustom:false, usesObjectURL:false }
     ];
 
     let cart = [];
-    let nextId = 9;
+    let nextId = 18;
     let deleteCandidateId = null;
 
     // --- DOM ---
